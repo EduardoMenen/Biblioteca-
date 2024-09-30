@@ -3,81 +3,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Biblioteca {
-
-    // BD em memória
+    //BD em memória
     private List<Livro> acervo = new ArrayList<>();
 
-    public void adicionar(Livro livro) throws Exception {
-        if (livro.getTitulo() == null  livro.getTitulo().isEmpty())
-            throw new Exception("Não é permitido cadastrar livros sem título");
+    public void adicionar(Livro livro) throws Exception{
+        if (livro.getTitulo() == null || livro.getTitulo().isEmpty())
+            throw new Exception("Não é permitido cadastrar livro sem título");
+        if(livro.getAutor() == null || livro.getAutor().isEmpty()) 
+            throw new Exception("Não e possível cadastar um livro sem autor!");
+        if(livro.getAnoPublicacao() < 1400 || livro.getAnoPublicacao() > LocalDate.now().getYear())
+            throw new Exception("Coloque um ano de publição valido! (Maior que 1400 e menor ou igual o ano atual)");
+        if(livro.getnPaginas() <= 0)
+            throw new Exception("Coloque um número de páginas válido! (O número não pode ser negativo ou 0)");
         for (Livro livroAcervo : acervo) {
             if (livroAcervo.getTitulo().equalsIgnoreCase(livro.getTitulo()))
-                throw new Exception("Já existe um livro com este título");
+                throw new Exception("Já existe livro cadastrado com este título");
         }
-        if (livro.getAutor() == null  livro.getAutor().isEmpty())
-            throw new Exception("Não é permitido cadastrar livros sem autor");
-
-        if (livro.getAnoPublicacao() < 1400 || livro.getAnoPublicacao() > LocalDate.now().getYear())
-            throw new Exception("Ano de publicação inválido. Deve ser entre 1400 e 2024");
-
-        if (livro.getnPaginas() <= 0)
-            throw new Exception(" Não é permitido o cadastro de livros com o número de páginas negativos ou zerados.");
-
         acervo.add(livro);
     }
 
-    public List<Livro> pesquisarPorTitulo(String titulo) {
+    public List<Livro> pesquisarPorTitulo(String titulo){
         List<Livro> livrosEncontrados = new ArrayList<>();
+
         for (Livro livro : acervo) {
             if (livro.getTitulo().toLowerCase().contains(titulo.toLowerCase())) {
                 livrosEncontrados.add(livro);
             }
         }
+
         return livrosEncontrados;
     }
 
-    public void removerPorTitulo(String titulo) {
+    public void removerPorTitulo(String titulo) throws Exception{
+        boolean livroRemovido = false;
         for (Livro livro : acervo) {
             if (livro.getTitulo().equalsIgnoreCase(titulo)) {
+                livroRemovido = true;
                 acervo.remove(livro);
                 break;
             }
         }
+        if (!livroRemovido)
+            throw new Exception("O Livro com esse titulo não foi encontrado");
     }
 
-    public List<Livro> pesquisarTodos() {
+    public List<Livro> pesquisarTodos(){
         return this.acervo;
     }
-}
-Livro.java
-public class Livro {
-    private String titulo;
-    private String autor;
-    private int anoPublicacao;
-    private int nPaginas;
-    public String getTitulo() {
-        return titulo;
-    }
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-    public String getAutor() {
-        return autor;
-    }
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
-    public int getAnoPublicacao() {
-        return anoPublicacao;
-    }
-    public void setAnoPublicacao(int anoPublicacao) {
-        this.anoPublicacao = anoPublicacao;
-    }
-    public int getnPaginas() {
-        return nPaginas;
-    }
-    public void setnPaginas(int nPaginas) {
-        this.nPaginas = nPaginas;
-    }
-
+    
 }
